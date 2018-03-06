@@ -1,13 +1,15 @@
 from flask import Flask
 from springboot import EnableAutoConfiguration
 from os import getenv
+from ATCException import ATCException
 
 app = Flask(__name__)
 
-EnableAutoConfiguration(app, appname='config-python', profile='production', config_server=getenv('CONFIG_SERVER', None))
-
-#FUNCIONA
-#app.config.from_pyfile('config.yaml', silent=True)
+try:
+    EnableAutoConfiguration(app, appname='config-python', profile='production', config_server=getenv('CONFIG_SERVER', None))   
+except ATCException as e:
+    print(e)
+    app.config.from_pyfile('config.yaml', silent=True) 
 
 @app.route('/')
 def hello_world():
@@ -24,12 +26,8 @@ def show_post(post_id):
     return 'Post %d' % post_id
 
 if __name__ == '__main__':
-    # CONFIG: app.config.get('propertySources')[0]
-    # SERVER_NAME = app.config.get('propertySources')[0].get('source').get('SERVER_NAME')
-    HOST = app.config.get('propertySources')[0].get('source').get('HOST')
-    PORT = int(app.config.get('propertySources')[0].get('source').get('PORT'))
-    app.debug = app.config.get('propertySources')[0].get('source').get('DEBUG')
-    print(app.config.get('propertySources')[0])
-    print(app.config.get('propertySources')[0].get('source').get('HOST'))    
     
-    app.run(host=HOST, port=PORT, debug=app.debug)
+    print('SECRET_KEY: %s' % app.config.get('SECRET_KEY'))
+    #app.run(host=conf.get('HOST'), port=int(conf.get('PORT')), debug=app.debug)
+    
+    app.run()

@@ -1,2 +1,6 @@
 DEBUG= True
 SERVER_NAME= 'localhost:5001'
+SECRET_KEY= 'secret-key-default'
+TESTING = False
+TEST_TMP_DIR = 'tests'
+TEST_TIMEOUT = 20
